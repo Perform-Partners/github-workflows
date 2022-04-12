@@ -29,9 +29,6 @@ on:
       aws-secret-key:
         description: 'AWS secret key'
         required: true
-  push:
-    branches:
-      - main
 
 env:
   AWS_REGION: eu-west-2

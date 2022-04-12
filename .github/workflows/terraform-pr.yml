@@ -36,13 +36,6 @@ on:
         description: 'AWS secret key'
         required: true
 
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - edited
-      - synchronize
-
 env:
   AWS_REGION: eu-west-2
 
