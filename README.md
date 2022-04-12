@@ -6,4 +6,5 @@ A collection of reusable Github Action workflows
 * File names in the format of `<technology>-<workflow context>.yml`, e.g. 
     * `terraform-main.yml` for a Terraform pipeline that runs on `main` branch events 
     * `docker-pr.yml` for a Docker image repo pipeline that runs on pull request events.
+    * `workflows-main.yml` contains actions that run in this very repo
     
