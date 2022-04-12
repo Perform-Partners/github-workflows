@@ -36,9 +36,6 @@ on:
         description: 'AWS secret key'
         required: true
 
-env:
-  AWS_REGION: eu-west-2
-
 jobs:
   plan:
     name: Terraform plan

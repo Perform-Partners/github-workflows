@@ -30,9 +30,6 @@ on:
         description: 'AWS secret key'
         required: true
 
-env:
-  AWS_REGION: eu-west-2
-
 jobs:
   deploy:
     name: Deploy
