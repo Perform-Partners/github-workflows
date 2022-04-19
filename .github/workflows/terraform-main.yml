@@ -1,0 +1,65 @@
+name: Apply
+
+on:
+  workflow_call:
+    inputs:
+      tf_version:
+        description: 'Terraform version to run'
+        default: '1.1.7'
+        required: false
+        type: string
+
+      runs-on:
+        description: 'Where to run, usually ubuntu-latest or self-hosted'
+        default: 'ubuntu-latest'
+        required: false
+        type: string
+
+      aws-region:
+        description: 'AWS region'
+        default: 'eu-west-2'
+        required: false
+        type: string
+
+    secrets:
+      aws-account:
+        description: 'AWS account ID'
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ${{ inputs.runs-on }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ inputs.tf_version }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.aws-account }}:role/ci
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Terraform apply
+        id: tf-apply
+        env:
+          TF_WORKSPACE: default
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Terraform plan
+        id: tf-plan
+        env:
+          TF_WORKSPACE: default
+        run: |
+          terraform init
+          terraform plan -detailed-exitcode
