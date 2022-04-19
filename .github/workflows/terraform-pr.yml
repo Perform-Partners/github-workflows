@@ -34,8 +34,8 @@ on:
 
 jobs:
   plan:
-    name: Terraform plan
-    runs-on: ${{ inputs.runs-on }}
+    name: Terraform plan test
+    runs-on: self-hosted
 
     steps:
       - name: Checkout
