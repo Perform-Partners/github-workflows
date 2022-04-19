@@ -9,6 +9,12 @@ on:
         required: false
         type: string
 
+      checkov_check:
+        description: 'Comma-separated list of Checkov tests to perform'
+        default: ''
+        required: false
+        type: string
+
       checkov_skip_check:
         description: 'Comma-separated list of Checkov tests to skip'
         default: ''
@@ -79,6 +85,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
+          check: ${{ inputs.checkov_check }}
           skip_check: ${{ inputs.checkov_skip_check }}
           soft_fail: false # optional: do not return an error code if there are failed checks
           framework: terraform # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
