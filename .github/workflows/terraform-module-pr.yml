@@ -1,0 +1,75 @@
+name: Terraform Module PR
+
+on:
+  workflow_call:
+    inputs:
+      tf_version:
+        description: 'Terraform version to run'
+        default: '1.1.8'
+        required: false
+        type: string
+
+      checkov_check:
+        description: 'Comma-separated list of Checkov tests to perform'
+        default: ''
+        required: false
+        type: string
+
+      checkov_skip_check:
+        description: 'Comma-separated list of Checkov tests to skip'
+        default: ''
+        required: false
+        type: string
+
+      runs-on:
+        description: 'Where to run, usually ubuntu-latest or self-hosted'
+        default: 'self-hosted'
+        required: false
+        type: string
+
+jobs:
+  plan:
+    name: Validate
+    runs-on: ${{ inputs.runs-on }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ inputs.tf_version }}
+
+      - name: Terraform init
+        id: init
+        run: terraform init --backend=false
+        continue-on-error: false
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -recursive -check -diff
+        continue-on-error: false
+
+      - name: Terraform validate
+        id: validate
+        run: terraform validate
+
+  checkov:
+    name: Run Checkov
+    runs-on: ${{ inputs.runs-on }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          check: ${{ inputs.checkov_check }}
+          skip_check: ${{ inputs.checkov_skip_check }}
+          soft_fail: false
+          framework: terraform
+          download_external_modules: false
+          log_level: WARNING
