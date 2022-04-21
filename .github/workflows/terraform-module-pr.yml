@@ -54,6 +54,7 @@ jobs:
       - name: Terraform validate
         id: validate
         run: terraform validate
+        continue-on-error: false
 
   checkov:
     name: Run Checkov
