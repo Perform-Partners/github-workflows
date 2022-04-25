@@ -28,8 +28,8 @@ on:
         type: string
 
 jobs:
-  plan:
-    name: Validate
+  validate:
+    name: Terraform Validate
     runs-on: ${{ inputs.runs-on }}
 
     steps:
@@ -57,7 +57,7 @@ jobs:
         continue-on-error: false
 
   checkov:
-    name: Run Checkov
+    name: Checkov
     runs-on: ${{ inputs.runs-on }}
 
     steps:
