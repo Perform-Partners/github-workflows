@@ -1,4 +1,4 @@
-name: Apply
+name: Terraform Release
 
 on:
   workflow_call:

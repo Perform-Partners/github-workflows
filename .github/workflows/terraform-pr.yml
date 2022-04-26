@@ -1,4 +1,4 @@
-name: Pull request
+name: Terraform Pull Request
 
 on:
   workflow_call:
