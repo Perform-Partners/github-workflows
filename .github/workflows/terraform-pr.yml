@@ -3,9 +3,14 @@ name: Pull request
 on:
   workflow_call:
     inputs:
+      tfvars:
+        description: 'tfvar file and backend-config identifier'
+        required: true
+        type: string
+
       tf_version:
         description: 'Terraform version to run'
-        default: '1.1.7'
+        default: '1.1.8'
         required: false
         type: string
 
@@ -23,7 +28,7 @@ on:
 
       runs-on:
         description: 'Where to run, usually ubuntu-latest or self-hosted'
-        default: 'ubuntu-latest'
+        default: 'self-hosted'
         required: false
         type: string
 
@@ -36,6 +41,9 @@ on:
     secrets:
       aws-account:
         description: 'AWS account ID'
+        required: true
+      gh-pat:
+        description: 'Github PAT of CI user'
         required: true
 
 jobs:
@@ -53,6 +61,7 @@ jobs:
           terraform_version: ${{ inputs.tf_version }}
 
       - name: Terraform Format
+        working-directory: ./terraform
         id: fmt
         run: terraform fmt -recursive -check -diff
         continue-on-error: false
@@ -66,12 +75,14 @@ jobs:
           aws-region: ${{ inputs.aws-region }}
 
       - name: Terraform plan
+        working-directory: ./terraform
         id: tf-plan
         env:
           TF_WORKSPACE: default
         run: |
-          terraform init
-          terraform plan
+          git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
+          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+          terraform plan -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
   checkov:
     name: Run Checkov
