@@ -47,9 +47,6 @@ jobs:
   plan:
     name: Terraform plan
     runs-on: ${{ inputs.runs-on }}
-    defaults:
-      run:
-        working-directory: ./terraform
 
     steps:
       - name: Checkout
@@ -61,6 +58,7 @@ jobs:
           terraform_version: ${{ inputs.tf_version }}
 
       - name: Terraform Format
+        working-directory: ./terraform
         id: fmt
         run: terraform fmt -recursive -check -diff
         continue-on-error: false
@@ -74,6 +72,7 @@ jobs:
           aws-region: ${{ inputs.aws-region }}
 
       - name: Terraform plan
+        working-directory: ./terraform
         id: tf-plan
         env:
           TF_WORKSPACE: default

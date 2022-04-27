@@ -57,6 +57,7 @@ jobs:
           aws-region: ${{ inputs.aws-region }}
 
       - name: Terraform apply
+        working-directory: ./terraform
         id: tf-apply
         env:
           TF_WORKSPACE: default
@@ -65,6 +66,7 @@ jobs:
           terraform apply -auto-approve -var-file tfvars/${{ inputs.tfvars }}.tfvars
 
       - name: Terraform plan
+        working-directory: ./terraform
         id: tf-plan
         env:
           TF_WORKSPACE: default
