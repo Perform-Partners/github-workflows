@@ -42,6 +42,9 @@ on:
       aws-account:
         description: 'AWS account ID'
         required: true
+      gh-pat:
+        description: 'Github PAT of CI user'
+        required: true
 
 jobs:
   plan:
@@ -51,6 +54,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Configure Github credentials
+        uses: oleksiyrudenko/gha-git-credentials@v2.1
+        with:
+          global: true
+          name: 'pp-ci'
+          email: 'github-pp-ci@perform-partners.com'
+          actor: 'pp-ci'
+          token: ${{ secrets.gh-pat }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
