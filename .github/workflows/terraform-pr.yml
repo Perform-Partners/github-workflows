@@ -3,9 +3,14 @@ name: Pull request
 on:
   workflow_call:
     inputs:
+      tfvars:
+        description: 'tfvar file and backend-config identifier'
+        required: true
+        type: string
+
       tf_version:
         description: 'Terraform version to run'
-        default: '1.1.7'
+        default: '1.1.8'
         required: false
         type: string
 
@@ -70,8 +75,8 @@ jobs:
         env:
           TF_WORKSPACE: default
         run: |
-          terraform init
-          terraform plan
+          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+          terraform plan -var-file tfvars/${{ inputs.tfvars }}.tfvars
 
   checkov:
     name: Run Checkov

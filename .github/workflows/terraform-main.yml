@@ -3,9 +3,14 @@ name: Apply
 on:
   workflow_call:
     inputs:
+      tfvars:
+        description: 'tfvar file and backend-config identifier'
+        required: true
+        type: string
+
       tf_version:
         description: 'Terraform version to run'
-        default: '1.1.7'
+        default: '1.1.8'
         required: false
         type: string
 
@@ -53,13 +58,13 @@ jobs:
         env:
           TF_WORKSPACE: default
         run: |
-          terraform init
-          terraform apply -auto-approve
+          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+          terraform apply -auto-approve -var-file tfvars/${{ inputs.tfvars }}.tfvars
 
       - name: Terraform plan
         id: tf-plan
         env:
           TF_WORKSPACE: default
         run: |
-          terraform init
-          terraform plan -detailed-exitcode
+          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+          terraform plan -detailed-exitcode -var-file tfvars/${{ inputs.tfvars }}.tfvars
