@@ -63,7 +63,7 @@ jobs:
           TF_WORKSPACE: default
         run: |
           terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
-          terraform apply -auto-approve -var-file tfvars/${{ inputs.tfvars }}.tfvars
+          terraform apply -auto-approve -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
       - name: Terraform plan
         working-directory: ./terraform
@@ -72,4 +72,4 @@ jobs:
           TF_WORKSPACE: default
         run: |
           terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
-          terraform plan -detailed-exitcode -var-file tfvars/${{ inputs.tfvars }}.tfvars
+          terraform plan -detailed-exitcode -var-file=tfvars/${{ inputs.tfvars }}.tfvars

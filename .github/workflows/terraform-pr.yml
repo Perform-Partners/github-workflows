@@ -78,7 +78,7 @@ jobs:
           TF_WORKSPACE: default
         run: |
           terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
-          terraform plan -var-file tfvars/${{ inputs.tfvars }}.tfvars
+          terraform plan -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
   checkov:
     name: Run Checkov
