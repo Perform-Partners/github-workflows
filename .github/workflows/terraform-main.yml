@@ -16,7 +16,7 @@ on:
 
       runs-on:
         description: 'Where to run, usually ubuntu-latest or self-hosted'
-        default: 'ubuntu-latest'
+        default: 'self-hosted'
         required: false
         type: string
 
@@ -35,6 +35,9 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ${{ inputs.runs-on }}
+    defaults:
+      run:
+        working-directory: ./terraform
 
     steps:
       - name: Checkout
