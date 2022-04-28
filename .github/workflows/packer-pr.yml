@@ -44,6 +44,14 @@ jobs:
           arguments: -syntax-only
           target: ${{ inputs.packer-path }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.aws-account }}:role/ci
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+          aws-region: ${{ inputs.aws-region }}
+
       - name: Packer Build
         uses: hashicorp/packer-github-actions@master
         with:
