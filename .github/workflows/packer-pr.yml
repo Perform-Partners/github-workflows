@@ -30,7 +30,7 @@ on:
 
 jobs:
   plan:
-    name: Terraform plan
+    name: Packer Review
     runs-on: ${{ inputs.runs-on }}
 
     steps:
@@ -56,7 +56,6 @@ jobs:
         uses: hashicorp/packer-github-actions@master
         with:
           command: init
-          arguments: "-on-error=abort"
           target: ${{ inputs.packer-path }}
         env:
           PACKER_LOG: 1
