@@ -3,6 +3,11 @@ name: Terraform Review
 on:
   workflow_call:
     inputs:
+      tfvars:
+        description: 'tfvar file and backend-config identifier'
+        required: true
+        type: string
+
       tf_version:
         description: 'Terraform version to run'
         default: '1.1.8'
@@ -23,7 +28,7 @@ on:
 
       runs-on:
         description: 'Where to run, usually ubuntu-latest or self-hosted'
-        default: 'self-hosted'
+        default: 'ubuntu-latest'
         required: false
         type: string
 
@@ -36,6 +41,9 @@ on:
     secrets:
       aws-account:
         description: 'AWS account ID'
+        required: true
+      gh-pat:
+        description: 'Github PAT of CI user'
         required: true
 
 jobs:
@@ -52,15 +60,14 @@ jobs:
         with:
           terraform_version: ${{ inputs.tf_version }}
 
-      - name: Terraform init
-        id: init
-        run: terraform init
-        continue-on-error: false
-
       - name: Terraform fmt
+        working-directory: ./terraform
         id: fmt
         run: terraform fmt -recursive -check -diff
         continue-on-error: false
+
+      - name: Configure Github credentials
+        run: git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -70,11 +77,18 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ inputs.aws-region }}
 
+      - name: Terraform init
+        working-directory: ./terraform
+        id: init
+        run: terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+        continue-on-error: false
+
       - name: Terraform plan
-        id: tf-plan
+        working-directory: ./terraform
+        id: plan
         env:
           TF_WORKSPACE: default
-        run: terraform plan
+        run: terraform plan -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
   checkov:
     name: Checkov

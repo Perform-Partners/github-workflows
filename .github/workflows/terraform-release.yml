@@ -3,6 +3,11 @@ name: Terraform Release
 on:
   workflow_call:
     inputs:
+      tfvars:
+        description: 'tfvar file and backend-config identifier'
+        required: true
+        type: string
+
       tf_version:
         description: 'Terraform version to run'
         default: '1.1.8'
@@ -25,6 +30,9 @@ on:
       aws-account:
         description: 'AWS account ID'
         required: true
+      gh-pat:
+        description: 'Github PAT of CI user'
+        required: true
 
 jobs:
   tag:
@@ -44,6 +52,9 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ${{ inputs.runs-on }}
+    defaults:
+      run:
+        working-directory: ./terraform
 
     steps:
       - name: Checkout
@@ -63,17 +74,21 @@ jobs:
           aws-region: ${{ inputs.aws-region }}
 
       - name: Terraform apply
+        working-directory: ./terraform
         id: tf-apply
         env:
           TF_WORKSPACE: default
         run: |
-          terraform init
-          terraform apply -auto-approve
+          git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
+          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+          terraform apply -auto-approve -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
       - name: Terraform plan
+        working-directory: ./terraform
         id: tf-plan
         env:
           TF_WORKSPACE: default
         run: |
-          terraform init
-          terraform plan -detailed-exitcode
+          git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
+          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+          terraform plan -detailed-exitcode -var-file=tfvars/${{ inputs.tfvars }}.tfvars
