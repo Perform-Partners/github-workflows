@@ -5,13 +5,13 @@ on:
     inputs:
       tf_version:
         description: 'Terraform version to run'
-        default: '1.1.7'
+        default: '1.1.8'
         required: false
         type: string
 
       runs-on:
         description: 'Where to run, usually ubuntu-latest or self-hosted'
-        default: 'ubuntu-latest'
+        default: 'self-hosted'
         required: false
         type: string
 
