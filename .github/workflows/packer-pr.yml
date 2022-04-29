@@ -64,8 +64,8 @@ jobs:
         uses: hashicorp/packer-github-actions@master
         with:
           command: build
-          arguments: "-on-error=abort -force-deregister"
+          arguments: "-on-error=abort"
           target: ${{ inputs.packer-path }}
         env:
           PACKER_LOG: 1
-          PKR_VAR_ami_name_override: 'pull-request-ami'
+          PKR_VAR_is_pr: true
