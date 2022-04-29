@@ -1,4 +1,4 @@
-name: Pull request
+name: Release
 
 on:
   workflow_call:
@@ -30,7 +30,7 @@ on:
 
 jobs:
   plan:
-    name: Packer Review
+    name: Packer Release
     runs-on: ${{ inputs.runs-on }}
 
     steps:
@@ -68,4 +68,4 @@ jobs:
           target: ${{ inputs.packer-path }}
         env:
           PACKER_LOG: 1
-          PKR_VAR_is_pull_request: true
+          PKR_VAR_is_pull_request: false
