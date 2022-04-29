@@ -68,5 +68,5 @@ jobs:
         env:
           PACKER_LOG: 1
           PKR_VAR_is_pull_request: true
-          PKR_VAR_commit_sha: ${{ github.event.pull_request.base.sha }}
+          PKR_VAR_commit_sha: ${{ github.event.pull_request.head.sha }}
           PKR_VAR_pull_request_name: ${{ github.event.pull_request.title }}
