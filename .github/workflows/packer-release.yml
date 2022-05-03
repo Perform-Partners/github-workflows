@@ -82,6 +82,6 @@ jobs:
           PACKER_LOG: 1
           PKR_VAR_is_pull_request: false
           PKR_VAR_commit_sha: ${{ github.event.head_commit.id }}
-          PKR_VAR_release_tag: ${{ steps.push_tag.new_tag }}
           PKR_VAR_repo: ${{ github.repository }}
           PKR_VAR_ami_users: ${{ secrets.ami-users }}
+          PKR_VAR_release_tag: ${{ steps.push_tag.new_tag }}
