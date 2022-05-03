@@ -27,6 +27,9 @@ on:
       gh-pat:
         description: 'Github PAT of CI user'
         required: true
+      ami-users:
+        description: 'A list of AWS account IDs to share the AMI with, e.g. ["12345678","87654321"]'
+        required: false
 
 jobs:
   plan:
@@ -36,6 +39,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: Bump version and push tag
+        id: push_tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh-pat }}
+          RELEASE_BRANCHES: 'main'
+          WITH_V: true
 
       - name: Packer Validate
         uses: hashicorp/packer-github-actions@master
@@ -64,11 +77,11 @@ jobs:
         uses: hashicorp/packer-github-actions@master
         with:
           command: build
-          arguments: "-on-error=abort"
           target: ${{ inputs.packer-path }}
         env:
           PACKER_LOG: 1
           PKR_VAR_is_pull_request: false
           PKR_VAR_commit_sha: ${{ github.event.head_commit.id }}
-          PKR_VAR_commit_msg: ${{ github.event.head_commit.message }}
-
+          PKR_VAR_release_tag: ${{ steps.push_tag.new_tag }}
+          PKR_VAR_repo: ${{ github.repository }}
+          PKR_VAR_ami_users: ${{ secrets.ami-users }}
