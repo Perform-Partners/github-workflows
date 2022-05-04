@@ -28,7 +28,7 @@ on:
 
       runs-on:
         description: 'Where to run, usually ubuntu-latest or self-hosted'
-        default: 'ubuntu-latest'
+        default: 'self-hosted'
         required: false
         type: string
 
@@ -59,6 +59,12 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ${{ inputs.tf_version }}
+
+      - name: Terraform version
+        working-directory: ./terraform
+        id: version
+        run: terraform --version
+        continue-on-error: false
 
       - name: Terraform fmt
         working-directory: ./terraform

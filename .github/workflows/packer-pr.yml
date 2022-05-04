@@ -1,0 +1,78 @@
+name: Pull request
+
+on:
+  workflow_call:
+    inputs:
+      packer-path:
+        description: 'Path to Packer file in the repo'
+        required: true
+        type: string
+
+      runs-on:
+        description: 'Where to run, usually ubuntu-latest or self-hosted'
+        default: 'self-hosted'
+        required: false
+        type: string
+
+      aws-region:
+        description: 'AWS region'
+        default: 'eu-west-2'
+        required: false
+        type: string
+
+    secrets:
+      aws-account:
+        description: 'AWS account ID'
+        required: true
+      gh-pat:
+        description: 'Github PAT of CI user'
+        required: true
+      ami-users:
+        description: 'A list of AWS account IDs to share the AMI with, e.g. ["12345678","87654321"]'
+        required: false
+
+jobs:
+  plan:
+    name: Packer Review
+    runs-on: ${{ inputs.runs-on }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Packer Validate
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target: ${{ inputs.packer-path }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.aws-account }}:role/ci
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Packer Init
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: init
+          target: ${{ inputs.packer-path }}
+        env:
+          PACKER_LOG: 1
+
+      - name: Packer Build
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build
+          target: ${{ inputs.packer-path }}
+        env:
+          PACKER_LOG: 1
+          PKR_VAR_is_pull_request: true
+          PKR_VAR_commit_sha: ${{ github.event.pull_request.head.sha }}
+          PKR_VAR_repo: ${{ github.repository }}
+          PKR_VAR_ami_users: ${{ secrets.ami-users }}
+          PKR_VAR_pull_request_name: ${{ github.event.pull_request.title }}
+          PKR_VAR_branch_name: ${{ github.head_ref }}
