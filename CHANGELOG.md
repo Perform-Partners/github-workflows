@@ -4,14 +4,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-## [0.3.0](https://github.com/Perform-Partners/tf-tags/releases/tag/v0.3.0)
-### Added
-* Workflows for Terraform Module PRs and Releases [danw-pp](https://github.com/danw-pp)
+## [[0.8.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.8.0)
+### Changed
+* Added permissions to and Changed naming of local release workflow - [danw-pp](https://github.com/danw-pp)
+* Renaming Terraform "main" workflow to "release" to reflect the context in which it will be used - [danw-pp](https://github.com/danw-pp)
+* Rewording PR workflow name - [danw-pp](https://github.com/danw-pp)
 
-## [0.2.0](https://github.com/Perform-Partners/tf-tags/releases/tag/v0.2.0)
+## [[0.7.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.7.0)
+
+## [[0.6.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.6.0)
+
+## [[0.5.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.5.0)
+
+## [[0.4.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.4.0)
+
+## [[0.3.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.3.0)
+### Added
+* Workflows for Terraform Module PRs and Releases - [danw-pp](https://github.com/danw-pp)
+
+## [[0.2.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.2.0)
 ### Added
 * Checkov check argument
 
-## [0.1.0](https://github.com/Perform-Partners/tf-tags/releases/tag/v0.1.0)
+## [[0.1.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.1.0)
 ### Added
 * Initial version with Terraform product workflows and tag creation
