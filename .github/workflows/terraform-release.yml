@@ -66,6 +66,7 @@ jobs:
           TF_WORKSPACE: default
         run: |
           git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
+          terraform --version
           terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
           terraform apply -auto-approve -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
