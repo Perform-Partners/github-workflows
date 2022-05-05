@@ -102,7 +102,7 @@ jobs:
         id: apply
         env:
           TF_WORKSPACE: default
-        run: terraform apply -auto-approve -var-file=tfvars/${{ inputs.tfvars }}.tfvars
+        run: terraform apply -input=false -auto-approve -var-file=tfvars/${{ inputs.tfvars }}.tfvars
         continue-on-error: false
 
       - name: Terraform plan
@@ -110,4 +110,4 @@ jobs:
         id: plan
         env:
           TF_WORKSPACE: default
-        run: terraform plan -detailed-exitcode -var-file=tfvars/${{ inputs.tfvars }}.tfvars
+        run: terraform plan -input=false -detailed-exitcode -var-file=tfvars/${{ inputs.tfvars }}.tfvars

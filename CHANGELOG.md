@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Rewording PR workflow name - [danw-pp](https://github.com/danw-pp)
 * Normalising and renaming of workflows, jobs and steps - [danw-pp](https://github.com/danw-pp)
 * Splitting multiple run items into separate steps - [danw-pp](https://github.com/danw-pp)
+* Made terraform plan and apply non-interactive to prevent stalled jobs on missing variables - [danw-pp](https://github.com/danw-pp)
 
 ## [[0.7.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.7.0)
 

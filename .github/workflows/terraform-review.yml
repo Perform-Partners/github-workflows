@@ -94,7 +94,7 @@ jobs:
         id: plan
         env:
           TF_WORKSPACE: default
-        run: terraform plan -var-file=tfvars/${{ inputs.tfvars }}.tfvars
+        run: terraform plan -input=false -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
   checkov:
     name: Checkov
