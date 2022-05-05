@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Added permissions to and Changed naming of local release workflow - [danw-pp](https://github.com/danw-pp)
 * Renaming Terraform "main" workflow to "release" to reflect the context in which it will be used - [danw-pp](https://github.com/danw-pp)
 * Rewording PR workflow name - [danw-pp](https://github.com/danw-pp)
+* Normalising and renaming of workflows, jobs and steps - [danw-pp](https://github.com/danw-pp)
+* Splitting multiple run items into separate steps - [danw-pp](https://github.com/danw-pp)
 
 ## [[0.7.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.7.0)
 

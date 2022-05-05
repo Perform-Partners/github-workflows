@@ -1,4 +1,4 @@
-name: Release
+name: Packer Release
 
 on:
   workflow_call:
@@ -32,9 +32,9 @@ on:
         required: false
 
 jobs:
-  plan:
-    name: Packer Release
-    runs-on: ${{ inputs.runs-on }}
+  tag:
+    name: Create Tag
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -43,19 +43,29 @@ jobs:
           fetch-depth: '0'
 
       - name: Bump version and push tag
-        id: push_tag
         uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.gh-pat }}
           RELEASE_BRANCHES: 'main'
           WITH_V: true
 
-      - name: Packer Validate
+  build:
+    name: Build
+    runs-on: ${{ inputs.runs-on }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: Packer validate
         uses: hashicorp/packer-github-actions@master
         with:
           command: validate
           arguments: -syntax-only
           target: ${{ inputs.packer-path }}
+        continue-on-error: false
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -65,15 +75,16 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ inputs.aws-region }}
 
-      - name: Packer Init
+      - name: Packer init
         uses: hashicorp/packer-github-actions@master
         with:
           command: init
           target: ${{ inputs.packer-path }}
         env:
           PACKER_LOG: 1
+        continue-on-error: false
 
-      - name: Packer Build
+      - name: Packer build
         uses: hashicorp/packer-github-actions@master
         with:
           command: build

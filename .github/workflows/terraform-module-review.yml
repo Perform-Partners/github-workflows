@@ -1,4 +1,4 @@
-name: Terraform Module PR
+name: Terraform Module Review
 
 on:
   workflow_call:
@@ -29,7 +29,7 @@ on:
 
 jobs:
   validate:
-    name: Terraform Validate
+    name: Validate
     runs-on: ${{ inputs.runs-on }}
 
     steps:
