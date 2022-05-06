@@ -1,4 +1,4 @@
-name: Apply
+name: Terraform Release
 
 on:
   workflow_call:
@@ -35,6 +35,23 @@ on:
         required: true
 
 jobs:
+  tag:
+    name: Create Tag
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh-pat }}
+          RELEASE_BRANCHES: 'main'
+          WITH_V: true
+
   deploy:
     name: Deploy
     runs-on: ${{ inputs.runs-on }}
@@ -51,6 +68,21 @@ jobs:
         with:
           terraform_version: ${{ inputs.tf_version }}
 
+      - name: Terraform version
+        working-directory: ./terraform
+        id: version
+        run: terraform --version
+        continue-on-error: false
+
+      - name: Terraform fmt
+        working-directory: ./terraform
+        id: fmt
+        run: terraform fmt -recursive -check -diff
+        continue-on-error: false
+
+      - name: Configure Github credentials
+        run: git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -59,23 +91,23 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ inputs.aws-region }}
 
+      - name: Terraform init
+        working-directory: ./terraform
+        id: init
+        run: terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+        continue-on-error: false
+
       - name: Terraform apply
         working-directory: ./terraform
-        id: tf-apply
+        id: apply
         env:
           TF_WORKSPACE: default
-        run: |
-          git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
-          terraform --version
-          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
-          terraform apply -auto-approve -var-file=tfvars/${{ inputs.tfvars }}.tfvars
+        run: terraform apply -input=false -auto-approve -var-file=tfvars/${{ inputs.tfvars }}.tfvars
+        continue-on-error: false
 
       - name: Terraform plan
         working-directory: ./terraform
-        id: tf-plan
+        id: plan
         env:
           TF_WORKSPACE: default
-        run: |
-          git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
-          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
-          terraform plan -detailed-exitcode -var-file=tfvars/${{ inputs.tfvars }}.tfvars
+        run: terraform plan -input=false -detailed-exitcode -var-file=tfvars/${{ inputs.tfvars }}.tfvars

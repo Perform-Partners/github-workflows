@@ -1,4 +1,4 @@
-name: Pull request
+name: Terraform Review
 
 on:
   workflow_call:
@@ -48,7 +48,7 @@ on:
 
 jobs:
   plan:
-    name: Terraform plan
+    name: Plan
     runs-on: ${{ inputs.runs-on }}
 
     steps:
@@ -60,11 +60,20 @@ jobs:
         with:
           terraform_version: ${{ inputs.tf_version }}
 
-      - name: Terraform Format
+      - name: Terraform version
+        working-directory: ./terraform
+        id: version
+        run: terraform --version
+        continue-on-error: false
+
+      - name: Terraform fmt
         working-directory: ./terraform
         id: fmt
         run: terraform fmt -recursive -check -diff
         continue-on-error: false
+
+      - name: Configure Github credentials
+        run: git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -74,19 +83,21 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ inputs.aws-region }}
 
+      - name: Terraform init
+        working-directory: ./terraform
+        id: init
+        run: terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
+        continue-on-error: false
+
       - name: Terraform plan
         working-directory: ./terraform
-        id: tf-plan
+        id: plan
         env:
           TF_WORKSPACE: default
-        run: |
-          git config --global url."https://oauth2:${{ secrets.gh-pat }}@github.com".insteadOf https://github.com
-          terraform --version
-          terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
-          terraform plan -var-file=tfvars/${{ inputs.tfvars }}.tfvars
+        run: terraform plan -input=false -var-file=tfvars/${{ inputs.tfvars }}.tfvars
 
   checkov:
-    name: Run Checkov
+    name: Checkov
     runs-on: ${{ inputs.runs-on }}
 
     steps:
@@ -99,7 +110,7 @@ jobs:
         with:
           check: ${{ inputs.checkov_check }}
           skip_check: ${{ inputs.checkov_skip_check }}
-          soft_fail: false # optional: do not return an error code if there are failed checks
-          framework: terraform # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
-          download_external_modules: true # optional: download external terraform modules from public git repositories and terraform registry
-          log_level: WARNING # optional: set log level. Default WARNING
+          soft_fail: false
+          framework: terraform
+          download_external_modules: true
+          log_level: WARNING
