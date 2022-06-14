@@ -8,7 +8,7 @@ on:
         required: true
         type: string
 
-      working_directory:
+      working-directory:
         description: 'Working directory containing terraform code to run'
         default: 'terraform'
         required: false
@@ -75,13 +75,13 @@ jobs:
           terraform_version: ${{ inputs.tf_version }}
 
       - name: Terraform version
-        working-directory: ./${{ inputs.working_directory }}
+        working-directory: ./${{ inputs.working-directory }}
         id: version
         run: terraform --version
         continue-on-error: false
 
       - name: Terraform fmt
-        working-directory: ./${{ inputs.working_directory }}
+        working-directory: ./${{ inputs.working-directory }}
         id: fmt
         run: terraform fmt -recursive -check -diff
         continue-on-error: false
@@ -98,13 +98,13 @@ jobs:
           aws-region: ${{ inputs.aws-region }}
 
       - name: Terraform init
-        working-directory: ./${{ inputs.working_directory }}
+        working-directory: ./${{ inputs.working-directory }}
         id: init
         run: terraform init -backend-config=tfvars/${{ inputs.tfvars }}.backend.tfvars
         continue-on-error: false
 
       - name: Terraform apply
-        working-directory: ./${{ inputs.working_directory }}
+        working-directory: ./${{ inputs.working-directory }}
         id: apply
         env:
           TF_WORKSPACE: default
@@ -112,7 +112,7 @@ jobs:
         continue-on-error: false
 
       - name: Terraform plan
-        working-directory: ./${{ inputs.working_directory }}
+        working-directory: ./${{ inputs.working-directory }}
         id: plan
         env:
           TF_WORKSPACE: default
