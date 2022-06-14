@@ -4,6 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [[0.10.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.10.0)
+### Added
+* Support for multiple terraform products in one repo - [danw-pp](https://github.com/danw-pp)
+
+## [[0.9.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.9.0)
+### Added
+* Add support for optional arguments in Packer - [dmitri-pp](https://github.com/dmitri-pp)
+
 ## [[0.8.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.8.0)
 ### Changed
 * Added permissions to and Changed naming of local release workflow - [danw-pp](https://github.com/danw-pp)
