@@ -32,23 +32,6 @@ on:
         required: false
 
 jobs:
-  tag:
-    name: Create Tag
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: '0'
-
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.36.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh-pat }}
-          RELEASE_BRANCHES: 'main'
-          WITH_V: true
-
   build:
     name: Build
     runs-on: ${{ inputs.runs-on }}
@@ -83,6 +66,14 @@ jobs:
         env:
           PACKER_LOG: 1
         continue-on-error: false
+
+      - name: Bump version and push tag
+        id: push_tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh-pat }}
+          RELEASE_BRANCHES: 'main'
+          WITH_V: true
 
       - name: Packer build
         uses: hashicorp/packer-github-actions@master
