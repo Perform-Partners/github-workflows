@@ -3,10 +3,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
+## [[0.12.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.12.0)
+### Changed
+* Fix for Packer release when running in a repo with multiple AMIs - [dmitri-pp](https://github.com/dmitri-pp)
 
-## [[0.10.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.10.0)
+## [[0.11.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.11.0)
 ### Added
 * Support for multiple terraform products in one repo - [danw-pp](https://github.com/danw-pp)
+
+## [[0.10.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.10.0)
+### Changed
+* Fix Packer release so that GH tag value is passed to Packer - [dmitri-pp](https://github.com/dmitri-pp)
 
 ## [[0.9.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.9.0)
 ### Added
