@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
+## [[0.13.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.13.0)
+### Added
+* Ability to use custom Packer Amazon plugin - [dmitri-pp](https://github.com/dmitri-pp)
+
 ## [[0.12.0]](https://github.com/Perform-Partners/github-workflows/releases/tag/v0.12.0)
 ### Changed
 * Fix for Packer release when running in a repo with multiple AMIs - [dmitri-pp](https://github.com/dmitri-pp)

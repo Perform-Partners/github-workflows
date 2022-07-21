@@ -11,7 +11,13 @@ on:
       packer-arguments:
         description: 'Packer command arguments'
         required: false
-        type: string    
+        type: string
+
+      packer-custom-plugin:
+        description: 'Use custom Packer plugin'
+        default: false
+        required: false
+        type: boolean
 
       runs-on:
         description: 'Where to run, usually ubuntu-latest or self-hosted'
@@ -60,6 +66,16 @@ jobs:
           role-skip-session-tagging: true
           role-duration-seconds: 3600
           aws-region: ${{ inputs.aws-region }}
+
+      - name: Packer get custom Amazon plugin
+        id: custom-plugin
+        if: ${{ inputs.packer-custom-plugin }}
+        run: |
+          curl -sL https://github.com/Perform-Partners/packer-plugin-amazon/releases/download/v1.1.1.a/packer-plugin-amazon-hashicorp386.zip -o ./packer-plugin-amazon-hashicorp386.zip
+          unzip ./packer-plugin-amazon-hashicorp386.zip
+          rm ./packer-plugin-amazon-hashicorp386.zip
+          chmod a+x ./packer-plugin-amazon
+        continue-on-error: false
 
       - name: Packer init
         uses: hashicorp/packer-github-actions@master
